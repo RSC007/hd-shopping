@@ -1,6 +1,41 @@
 import React from "react";
+import { useFormik } from "formik";
+import { useNavigate } from "react-router-dom";
+
+import { useSelector } from "react-redux";
+import { useMessages } from "../useHooks/useTostify";
 
 export default function Login() {
+  const navigate = useNavigate();
+  const { user: users } = useSelector((state) => state.user);
+  const { onErroMessage, onSuccessMessage } = useMessages();
+
+  const onLogin = async () => {
+    try {
+      // check is exist the user
+      const isExist = users?.find((item) => item?.user === values.user);
+      if (isExist) {
+        localStorage.setItem("user", JSON.stringify(isExist));
+        onSuccessMessage(`${values.user} login successfully`);
+        navigate("/app/home");
+      }
+    } catch (error) {
+      onErroMessage(`User or Password is wrong`);
+    }
+  };
+
+  const { errors, values, touched, getFieldProps, handleSubmit, ...formik } =
+    useFormik({
+      initialValues: {
+        user: "",
+        password: "",
+      },
+      onSubmit: (values) => {
+        console.log("values", values);
+        onLogin(values);
+      },
+    });
+
   return (
     <>
       <div class="container" id="login">
@@ -15,15 +50,28 @@ export default function Login() {
               sequi.
             </p>
             <div class="input2 text-center">
-              <input type="name" placeholder="User Name" />
-              <input type="password" placeholder="Password" />
+              <input
+                type="name"
+                placeholder="User Name"
+                {...getFieldProps("user")}
+              />
+              <input
+                type="password"
+                placeholder="Password"
+                {...getFieldProps("password")}
+              />
             </div>
-            <p class="text-center" id="btnlogin">
-              <a href="#">LOG IN</a>
-            </p>
-            <p class="text-center">
+            <button
+              type="button"
+              class="text-center btn btn-primary"
+              id="btnlogin"
+              onClick={handleSubmit}
+            >
+              LOG IN
+            </button>
+            {/* <p class="text-center">
               Forgot Password<a href="#">Click</a>
-            </p>
+            </p> */}
           </div>
         </div>
       </div>

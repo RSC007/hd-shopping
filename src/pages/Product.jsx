@@ -1,235 +1,86 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { addItem } from "../redux/slice/cartReducer";
+import axios from "axios";
+import { useMessages } from "../useHooks/useTostify";
 
 export default function Product() {
+  const [products, setProducts] = useState([]);
+  const dispatch = useDispatch();
+  const { onSuccessMessage } = useMessages();
+
+  const getAllProducts = async () => {
+    try {
+      const response = await axios("https://dummyjson.com/products");
+      const { data } = response;
+      setProducts(data?.products || []);
+    } catch (error) {
+      // something went wrong
+    }
+  };
+
+  const onAddOrder = (item) => {
+    dispatch(addItem(item));
+    onSuccessMessage("Product added succefully");
+  };
+
+  useEffect(() => {
+    getAllProducts();
+  }, []);
+
   return (
     <>
       <div class="container" id="product-cards">
         <h1 class="text-center">PRODUCTS</h1>
         <div
-          class="row"
           style={{
-            marginTop: "30px",
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: "space-between",
+            rowGap: "28px",
+            marginTop: "100px",
           }}
         >
-          <div class="col-md-3 py-3 py-md-0">
-            <div class="card">
-              <img src="C:\Users\acer\OneDrive\Documents\Desktop\images\88888.jpg" />
-
-              <div class="card-body">
-                <h3 class="text-center">Laptop</h3>
-                <p class="text-center">Made in india.</p>
-                <div class="star text-center">
-                  <i class="fa-solid fa-star checked"></i>
-                  <i class="fa-solid fa-star checked"></i>
-                  <i class="fa-solid fa-star checked"></i>
-                  <i class="fa-solid fa-star checked"></i>
-                  <i class="fa-solid fa-star checked"></i>
+          {products?.map((item) => (
+            <>
+              <div
+                key={item?.id}
+                class="card"
+                style={{
+                  width: "18rem",
+                }}
+              >
+                <img
+                  src={item?.thumbnail}
+                  class="card-img-top"
+                  height="250px"
+                  alt="..."
+                />
+                <div
+                  class="card-body"
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                    gap: "30px",
+                  }}
+                >
+                  <div>
+                    <h5 class="card-title">{item?.title}</h5>
+                    <p class="card-text">{item?.description}</p>
+                  </div>
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    onClick={() => onAddOrder(item)}
+                  >
+                    Order
+                  </button>
                 </div>
-                <h2>
-                  $200{" "}
-                  <span>
-                    <li class="fa-solid fa-cart-shopping"></li>
-                  </span>
-                </h2>
-                <button>Order Now </button>
               </div>
-            </div>
-          </div>
-
-          <div class="col-md-3 py-3 py-md-0">
-            <div class="card">
-              <img
-                src="C:\Users\acer\OneDrive\Documents\Desktop\images\b.jpg"
-                alt=""
-              />
-              <div class="card-body">
-                <h3 class="text-center">PC Moniter</h3>
-                <p class="text-center">Made in india</p>
-                <div class="star text-center">
-                  <i class="fa-solid fa-star checked"></i>
-                  <i class="fa-solid fa-star checked"></i>
-                  <i class="fa-solid fa-star checked"></i>
-                  <i class="fa-solid fa-star checked"></i>
-                  <i class="fa-solid fa-star checked"></i>
-                </div>
-                <h2>
-                  $600{" "}
-                  <span>
-                    <li class="fa-solid fa-cart-shopping"></li>
-                  </span>
-                </h2>
-                <button>Order Now </button>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-3 py-3 py-md-0">
-            <div class="card">
-              <img
-                src="C:\Users\acer\OneDrive\Documents\Desktop\images\c.jpg"
-                alt=""
-              />
-              <div class="card-body">
-                <h3 class="text-center">Iphone 13 pro</h3>
-                <p class="text-center">Made in America</p>
-                <div class="star text-center">
-                  <i class="fa-solid fa-star checked"></i>
-                  <i class="fa-solid fa-star checked"></i>
-                  <i class="fa-solid fa-star checked"></i>
-                  <i class="fa-solid fa-star checked"></i>
-                  <i class="fa-solid fa-star checked"></i>
-                </div>
-                <h2>
-                  $1000{" "}
-                  <span>
-                    <li class="fa-solid fa-cart-shopping"></li>
-                  </span>
-                </h2>
-                <button>Order Now </button>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-3 py-3 py-md-0">
-            <div class="card">
-              <img
-                src="C:\Users\acer\OneDrive\Documents\Desktop\images\d.jpg"
-                alt=""
-              />
-              <div class="card-body">
-                <h3 class="text-center">Ipad</h3>
-                <p class="text-center">Made in America</p>
-                <div class="star text-center">
-                  <i class="fa-solid fa-star checked"></i>
-                  <i class="fa-solid fa-star checked"></i>
-                  <i class="fa-solid fa-star checked"></i>
-                  <i class="fa-solid fa-star checked"></i>
-                  <i class="fa-solid fa-star checked"></i>
-                </div>
-                <h2>
-                  $300{" "}
-                  <span>
-                    <li class="fa-solid fa-cart-shopping"></li>
-                  </span>
-                </h2>
-                <button>Order Now </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div
-          class="row"
-          style={{
-            marginTop: "30px",
-          }}
-        >
-          <div class="col-md-3 py-3 py-md-0">
-            <div class="card">
-              <img
-                src="C:\Users\acer\OneDrive\Documents\Desktop\images\e.jpg"
-                alt=""
-              />
-              <div class="card-body">
-                <h3 class="text-center">Smart Watch</h3>
-                <p class="text-center">Made in india</p>
-                <div class="star text-center">
-                  <i class="fa-solid fa-star checked"></i>
-                  <i class="fa-solid fa-star checked"></i>
-                  <i class="fa-solid fa-star checked"></i>
-                  <i class="fa-solid fa-star checked"></i>
-                  <i class="fa-solid fa-star checked"></i>
-                </div>
-                <h2>
-                  $50.60{" "}
-                  <span>
-                    <li class="fa-solid fa-cart-shopping"></li>
-                  </span>
-                </h2>
-                <button>Order Now </button>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-3 py-3 py-md-0">
-            <div class="card">
-              <img
-                src="C:\Users\acer\OneDrive\Documents\Desktop\images\f.jpg"
-                alt=""
-              />
-              <div class="card-body">
-                <h3 class="text-center">Airpods</h3>
-                <p class="text-center">Made in india</p>
-                <div class="star text-center">
-                  <i class="fa-solid fa-star checked"></i>
-                  <i class="fa-solid fa-star checked"></i>
-                  <i class="fa-solid fa-star checked"></i>
-                  <i class="fa-solid fa-star checked"></i>
-                  <i class="fa-solid fa-star checked"></i>
-                </div>
-                <h2>
-                  $100{" "}
-                  <span>
-                    <li class="fa-solid fa-cart-shopping"></li>
-                  </span>
-                </h2>
-                <button>Order Now </button>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-3 py-3 py-md-0">
-            <div class="card">
-              <img
-                src="C:\Users\acer\OneDrive\Documents\Desktop\images\g.jpg"
-                alt=""
-              />
-              <div class="card-body">
-                <h3 class="text-center">iphone x</h3>
-                <p class="text-center">Made in America</p>
-                <div class="star text-center">
-                  <i class="fa-solid fa-star checked"></i>
-                  <i class="fa-solid fa-star checked"></i>
-                  <i class="fa-solid fa-star checked"></i>
-                  <i class="fa-solid fa-star checked"></i>
-                  <i class="fa-solid fa-star checked"></i>
-                </div>
-                <h2>
-                  $500{" "}
-                  <span>
-                    <li class="fa-solid fa-cart-shopping"></li>
-                  </span>
-                </h2>
-                <button>Order Now </button>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-3 py-3 py-md-0">
-            <div class="card">
-              <img
-                src="C:\Users\acer\OneDrive\Documents\Desktop\images\h.jpg"
-                alt=""
-              />
-              <div class="card-body">
-                <h3 class="text-center">Headphone</h3>
-                <p class="text-center">Made in india</p>
-                <div class="star text-center">
-                  <i class="fa-solid fa-star checked"></i>
-                  <i class="fa-solid fa-star checked"></i>
-                  <i class="fa-solid fa-star checked"></i>
-                  <i class="fa-solid fa-star checked"></i>
-                  <i class="fa-solid fa-star checked"></i>
-                </div>
-                <h2>
-                  $60{" "}
-                  <span>
-                    <li class="fa-solid fa-cart-shopping"></li>
-                  </span>
-                </h2>
-                <button>Order Now </button>
-              </div>
-            </div>
-          </div>
+              {/* <div key={item?.id}>{item?.title}</div> */}
+            </>
+          ))}
         </div>
       </div>
     </>

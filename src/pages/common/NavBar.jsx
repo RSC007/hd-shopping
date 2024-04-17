@@ -1,22 +1,64 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "../../styles/global.css";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUser } from "../../redux/slice/userSlice";
+import { resetCart } from "../../redux/slice/cartReducer";
 
 export default function NavBar() {
+  const user = JSON.parse(localStorage.getItem("user"));
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const cart = useSelector((state) => state.cart);
+
+  const onVisit = (path = "") => navigate(path);
+
+  const onLogout = () => {
+    localStorage.removeItem("user");
+    dispatch(resetCart());
+    navigate("/app/register");
+  };
+
+  useEffect(() => {
+    dispatch(fetchUser());
+  }, []);
+
   return (
     <body>
       <div class="top-navbar">
-        <p>WELCOME TO OUR SHOP</p>
-        <div class="icons">
-          <a href="login">
-            <img src="./images/register.png" alt="" width="18px" />
-            Login
-          </a>
-          <a href="register">
-            <img src="./images/register.png" alt="" width="18px" />
-            Register
-          </a>
-          <li class="fa-solid fa-cart-shopping"></li>
+        <p>WELCOME {user ? user?.user : "TO OUR SHOP"}</p>
+        <div
+          class="icons"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "6px",
+          }}
+        >
+          {user ? (
+            <button class="btn btn-primary" onClick={onLogout}>
+              {/* <img src="./images/register.png" alt="" width="18px" /> */}
+              Logout
+            </button>
+          ) : (
+            <button class="btn btn-primary" onClick={() => onVisit("login")}>
+              {/* <img src="./images/register.png" alt="" width="18px" /> */}
+              Login
+            </button>
+          )}
+          {!user && (
+            <button class="btn btn-primary" onClick={() => onVisit("register")}>
+              {/* <img src="./images/register.png" alt="" width="18px" /> */}
+              Register
+            </button>
+          )}
+          <button type="button" class="btn btn-primary position-relative">
+            <li class="fa-solid fa-cart-shopping"></li>
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+              {cart?.cartItems?.length}
+              {/* <span class="visually-hidden">unread messages</span> */}
+            </span>
+          </button>
         </div>
       </div>
 
@@ -41,25 +83,42 @@ export default function NavBar() {
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
               <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="index">
+                <button
+                  onClick={() => onVisit("home")}
+                  class="btn btn-primary"
+                  aria-current="page"
+                  href="index"
+                >
                   Home
-                </a>
+                </button>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="product">
+                <button
+                  onClick={() => onVisit("product")}
+                  class="btn btn-primary"
+                  href="product"
+                >
                   Product
-                </a>
+                </button>
               </li>
               <li class="nav-item dropdown"></li>
               <li class="nav-item">
-                <a class="nav-link" href="about">
+                <button
+                  onClick={() => onVisit("about")}
+                  class="btn btn-primary"
+                  href="about"
+                >
                   About
-                </a>
+                </button>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="contact">
+                <button
+                  onClick={() => onVisit("contact")}
+                  class="btn btn-primary"
+                  href="contact"
+                >
                   Contact
-                </a>
+                </button>
               </li>
             </ul>
             <form class="d-flex" id="search">
